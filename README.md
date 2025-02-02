@@ -12,3 +12,10 @@ It allows users to create polls, share them, vote, and view poll results.
 ✅ **Voting System** - Users can vote on available polls.  
 ✅ **View Poll Results** - The admin can check the number of votes each option has received.
 
+## Install Dependencies
+Install PythonFlask using:
+pip install flask
+
+## Run the Polling Application:
+Enter your Terminal, cd to project directory if not already there then enter:
+python app.py
