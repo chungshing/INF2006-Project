@@ -32,7 +32,10 @@
           </div>
           {% endfor %}
         </div>
-        <!-- Removed the Add Option button -->
+        <!-- Add Option button for this question -->
+        <div class="text-end mb-3">
+          <button type="button" class="btn btn-outline-primary btn-sm add-option">Add Option</button>
+        </div>
       </div>
     {% endfor %}
   </div>
@@ -82,6 +85,9 @@ document.addEventListener("DOMContentLoaded", function() {
           </span>
         </div>
       </div>
+      <div class="text-end mb-3">
+        <button type="button" class="btn btn-outline-primary btn-sm add-option">Add Option</button>
+      </div>
     `;
     return div;
   }
@@ -93,10 +99,23 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 
   questionsContainer.addEventListener('click', function(e) {
+    if (e.target.closest('.add-option')) {
+      const questionCard = e.target.closest('.question-card');
+      const optionsContainer = questionCard.querySelector('.options-container');
+      const qIndex = questionCard.getAttribute('data-index');
+      const optionCount = optionsContainer.querySelectorAll('.option-block').length;
+      const optionDiv = document.createElement('div');
+      optionDiv.classList.add('mb-2', 'position-relative', 'option-block');
+      optionDiv.innerHTML = `<input type="text" class="form-control" name="questions[${qIndex}][options][]" placeholder="Option ${optionCount + 1}" required>
+      <span class="delete-option"><i class="bi bi-x-circle-fill"></i></span>`;
+      optionsContainer.appendChild(optionDiv);
+    }
+
     if (e.target.closest('.delete-question')) {
       const questionCard = e.target.closest('.question-card');
       questionCard.remove();
     }
+
     if (e.target.closest('.delete-option')) {
       const optionBlock = e.target.closest('.option-block');
       const optionsContainer = optionBlock.parentElement;

@@ -22,21 +22,22 @@
         </button>
       </div>
       <input type="text" class="form-control mb-3" name="questions[0][question]" placeholder="Enter your question" required>
+
       <div class="options-container">
         <div class="mb-2 position-relative option-block">
           <input type="text" class="form-control" name="questions[0][options][]" placeholder="Option 1" required>
-          <span class="delete-option d-none">
-            <i class="bi bi-x-circle-fill"></i>
-          </span>
+          <!-- Hide delete option if there's only one -->
+          <span class="delete-option d-none"><i class="bi bi-x-circle-fill"></i></span>
         </div>
         <div class="mb-2 position-relative option-block">
           <input type="text" class="form-control" name="questions[0][options][]" placeholder="Option 2" required>
-          <span class="delete-option d-none">
-            <i class="bi bi-x-circle-fill"></i>
-          </span>
+          <span class="delete-option d-none"><i class="bi bi-x-circle-fill"></i></span>
         </div>
       </div>
-      <!-- Removed the add option button -->
+      <!-- Add Option button for this question -->
+      <div class="text-end mb-3">
+        <button type="button" class="btn btn-outline-primary btn-sm add-option">Add Option</button>
+      </div>
     </div>
   </div>
 
@@ -59,7 +60,7 @@ document.addEventListener("DOMContentLoaded", function() {
   let questionIndex = 1;
   const questionsContainer = document.getElementById('questionsContainer');
 
-  // Function to create a new question card (with two default options)
+  // Function to create a new question card with two default options and an "Add Option" button.
   function createQuestionCard(index) {
     const div = document.createElement('div');
     div.classList.add('question-card');
@@ -75,34 +76,49 @@ document.addEventListener("DOMContentLoaded", function() {
       <div class="options-container">
         <div class="mb-2 position-relative option-block">
           <input type="text" class="form-control" name="questions[${index}][options][]" placeholder="Option 1" required>
-          <span class="delete-option d-none">
-            <i class="bi bi-x-circle-fill"></i>
-          </span>
+          <span class="delete-option d-none"><i class="bi bi-x-circle-fill"></i></span>
         </div>
         <div class="mb-2 position-relative option-block">
           <input type="text" class="form-control" name="questions[${index}][options][]" placeholder="Option 2" required>
-          <span class="delete-option d-none">
-            <i class="bi bi-x-circle-fill"></i>
-          </span>
+          <span class="delete-option d-none"><i class="bi bi-x-circle-fill"></i></span>
         </div>
+      </div>
+      <div class="text-end mb-3">
+        <button type="button" class="btn btn-outline-primary btn-sm add-option">Add Option</button>
       </div>
     `;
     return div;
   }
 
-  // Add a new question card when the Add Question button is clicked
+  // Event listener for Add Question button
   document.getElementById('addQuestion').addEventListener('click', function() {
     const newQuestionCard = createQuestionCard(questionIndex);
     questionsContainer.appendChild(newQuestionCard);
     questionIndex++;
   });
 
-  // Delegate deletion for question cards and option blocks
+  // Delegate event handling for adding options, deleting questions, and deleting options
   questionsContainer.addEventListener('click', function(e) {
+    // Add Option: insert a new option input inside the corresponding options container.
+    if (e.target.closest('.add-option')) {
+      const questionCard = e.target.closest('.question-card');
+      const optionsContainer = questionCard.querySelector('.options-container');
+      const qIndex = questionCard.getAttribute('data-index');
+      const optionCount = optionsContainer.querySelectorAll('.option-block').length;
+      const optionDiv = document.createElement('div');
+      optionDiv.classList.add('mb-2', 'position-relative', 'option-block');
+      optionDiv.innerHTML = `<input type="text" class="form-control" name="questions[${qIndex}][options][]" placeholder="Option ${optionCount + 1}" required>
+      <span class="delete-option"><i class="bi bi-x-circle-fill"></i></span>`;
+      optionsContainer.appendChild(optionDiv);
+    }
+
+    // Delete Question: remove the entire question card.
     if (e.target.closest('.delete-question')) {
       const questionCard = e.target.closest('.question-card');
       questionCard.remove();
     }
+
+    // Delete Option: remove an option input if more than one exists.
     if (e.target.closest('.delete-option')) {
       const optionBlock = e.target.closest('.option-block');
       const optionsContainer = optionBlock.parentElement;
@@ -112,7 +128,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   });
 
-  // Toggle the visibility of delete buttons on question cards
+  // Toggle delete button visibility on question cards based on count
   function toggleDeleteQuestionButtons() {
     const questionCards = document.querySelectorAll('.question-card');
     questionCards.forEach(card => {
