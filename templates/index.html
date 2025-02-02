@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4 text-center">Your Polls</h2>
+<div class="container">
+  <div class="row justify-content-center">
+    {% for poll in polls %}
+    <div class="col-md-6 mb-3">
+      <div class="card">
+        <div class="card-body text-center">
+          <h5 class="card-title">{{ poll.title }}</h5>
+          <p class="card-text">{{ poll.description }}</p>
+          <p class="card-text">
+            Link:
+            <a href="{{ url_for('view_poll', poll_id=poll.id, _external=True) }}" target="_blank">
+              {{ url_for('view_poll', poll_id=poll.id, _external=True) }}
+            </a>
+          </p>
+          <div class="d-flex justify-content-center gap-2">
+            <a href="{{ url_for('poll_results', poll_id=poll.id) }}" class="btn btn-info btn-sm">View Results</a>
+            <a href="{{ url_for('edit_poll', poll_id=poll.id) }}" class="btn btn-secondary btn-sm">Edit</a>
+            <form action="{{ url_for('delete_poll', poll_id=poll.id) }}" method="post" style="display:inline;">
+              <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <p class="text-center">No polls created yet.</p>
+    {% endfor %}
+  </div>
+</div>
+<div class="mt-4 text-center">
+  <a href="{{ url_for('create_poll') }}" class="btn btn-success">Create New Poll</a>
+</div>
+{% endblock %}

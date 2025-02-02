@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4 text-center">Create a New Poll</h2>
+<form method="post" id="pollForm">
+  <div class="mb-3">
+    <label for="title" class="form-label">Poll Title</label>
+    <input type="text" class="form-control" id="title" name="title" placeholder="Enter poll title" required>
+  </div>
+  <div class="mb-4">
+    <label for="description" class="form-label">Poll Description</label>
+    <textarea class="form-control" id="description" name="description" rows="3" placeholder="Enter poll description"></textarea>
+  </div>
+
+  <div id="questionsContainer">
+    <!-- Default question card -->
+    <div class="question-card" data-index="0">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <label class="form-label">Question</label>
+        <!-- Hide delete button when it's the only question -->
+        <button type="button" class="btn btn-sm btn-danger delete-question d-none">
+          <i class="bi bi-x-circle-fill"></i>
+        </button>
+      </div>
+      <input type="text" class="form-control mb-3" name="questions[0][question]" placeholder="Enter your question" required>
+      <div class="options-container">
+        <div class="mb-2 position-relative option-block">
+          <input type="text" class="form-control" name="questions[0][options][]" placeholder="Option 1" required>
+          <span class="delete-option d-none">
+            <i class="bi bi-x-circle-fill"></i>
+          </span>
+        </div>
+        <div class="mb-2 position-relative option-block">
+          <input type="text" class="form-control" name="questions[0][options][]" placeholder="Option 2" required>
+          <span class="delete-option d-none">
+            <i class="bi bi-x-circle-fill"></i>
+          </span>
+        </div>
+      </div>
+      <!-- Removed the add option button -->
+    </div>
+  </div>
+
+  <!-- Centered Add Question Button -->
+  <div class="mt-3 text-center">
+    <button type="button" class="btn btn-primary" id="addQuestion">Add Question</button>
+  </div>
+
+  <!-- Centered Back and Create Poll Buttons -->
+  <div class="d-flex justify-content-center gap-2 mt-4">
+    <a href="{{ url_for('index') }}" class="btn btn-secondary">Back</a>
+    <button type="submit" class="btn btn-success">Create Poll</button>
+  </div>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  let questionIndex = 1;
+  const questionsContainer = document.getElementById('questionsContainer');
+
+  // Function to create a new question card (with two default options)
+  function createQuestionCard(index) {
+    const div = document.createElement('div');
+    div.classList.add('question-card');
+    div.setAttribute('data-index', index);
+    div.innerHTML = `
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <label class="form-label">Question</label>
+        <button type="button" class="btn btn-sm btn-danger delete-question">
+          <i class="bi bi-x-circle-fill"></i>
+        </button>
+      </div>
+      <input type="text" class="form-control mb-3" name="questions[${index}][question]" placeholder="Enter your question" required>
+      <div class="options-container">
+        <div class="mb-2 position-relative option-block">
+          <input type="text" class="form-control" name="questions[${index}][options][]" placeholder="Option 1" required>
+          <span class="delete-option d-none">
+            <i class="bi bi-x-circle-fill"></i>
+          </span>
+        </div>
+        <div class="mb-2 position-relative option-block">
+          <input type="text" class="form-control" name="questions[${index}][options][]" placeholder="Option 2" required>
+          <span class="delete-option d-none">
+            <i class="bi bi-x-circle-fill"></i>
+          </span>
+        </div>
+      </div>
+    `;
+    return div;
+  }
+
+  // Add a new question card when the Add Question button is clicked
+  document.getElementById('addQuestion').addEventListener('click', function() {
+    const newQuestionCard = createQuestionCard(questionIndex);
+    questionsContainer.appendChild(newQuestionCard);
+    questionIndex++;
+  });
+
+  // Delegate deletion for question cards and option blocks
+  questionsContainer.addEventListener('click', function(e) {
+    if (e.target.closest('.delete-question')) {
+      const questionCard = e.target.closest('.question-card');
+      questionCard.remove();
+    }
+    if (e.target.closest('.delete-option')) {
+      const optionBlock = e.target.closest('.option-block');
+      const optionsContainer = optionBlock.parentElement;
+      if (optionsContainer.querySelectorAll('.option-block').length > 1) {
+        optionBlock.remove();
+      }
+    }
+  });
+
+  // Toggle the visibility of delete buttons on question cards
+  function toggleDeleteQuestionButtons() {
+    const questionCards = document.querySelectorAll('.question-card');
+    questionCards.forEach(card => {
+      const deleteBtn = card.querySelector('.delete-question');
+      if (questionCards.length > 1) {
+        deleteBtn.classList.remove('d-none');
+      } else {
+        deleteBtn.classList.add('d-none');
+      }
+    });
+  }
+
+  const observer = new MutationObserver(toggleDeleteQuestionButtons);
+  observer.observe(questionsContainer, { childList: true });
+});
+</script>
+{% endblock %}

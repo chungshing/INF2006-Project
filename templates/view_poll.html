@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4 text-center">{{ poll.title }}</h2>
+<div class="card mx-auto" style="max-width: 600px;">
+  <div class="card-body">
+    <p class="card-text">{{ poll.description }}</p>
+    <!-- Optionally list questions and options here -->
+    {% for question in poll.questions %}
+      <h5>{{ question.question }}</h5>
+      <ul>
+        {% for option in question.options %}
+          <li>{{ option }}</li>
+        {% endfor %}
+      </ul>
+    {% endfor %}
+  </div>
+</div>
+<div class="mt-4 text-center">
+  <a href="{{ url_for('index') }}" class="btn btn-secondary">Back</a>
+</div>
+{% endblock %}
