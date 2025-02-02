@@ -14,8 +14,10 @@ It allows users to create polls, share them, vote, and view poll results.
 
 ## Install Dependencies
 Install PythonFlask using:
+
 pip install flask
 
 ## Run the Polling Application:
 Enter your Terminal, cd to project directory if not already there then enter:
+
 python app.py
