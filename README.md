@@ -13,7 +13,7 @@ It allows users to create polls, share them, vote, and view poll results.
 ✅ **View Poll Results** - The admin can check the number of votes each option has received.
 
 ## Connect to MYSQL
-Remember to on Apache and MYSQL in order to works
+Remember to on Apache and MYSQL in order to works. 
 You can use XAMPP to on Apache and MYSQL
 
 ## 1. Create a Virtual Environment
