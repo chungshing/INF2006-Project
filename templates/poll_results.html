@@ -1,19 +1,21 @@
 {% extends "base.html" %}
+
 {% block content %}
 <h2 class="mb-4 text-center">Results for: {{ poll.title }}</h2>
+
 <div class="card mx-auto" style="max-width: 600px;">
   <div class="card-body">
     <p class="card-text">{{ poll.description }}</p>
-    {% for question in poll.questions %}
-      {% set q_index = loop.index0 %}
+
+    {% for question in questions %}
       <div class="mb-4">
-        <h5>{{ question.question }}</h5>
+        <h5>{{ question.question_text }}</h5>
         <ul class="list-group">
           {% for option in question.options %}
             <li class="list-group-item d-flex justify-content-between align-items-center">
-              {{ option }}
+              {{ option.option_text }}
               <span class="badge bg-primary rounded-pill">
-                {{ poll.results[q_index][loop.index0] }}
+                {{ option.vote_count }} votes
               </span>
             </li>
           {% endfor %}
@@ -22,7 +24,12 @@
     {% endfor %}
   </div>
 </div>
+
 <div class="mt-4 text-center">
-  <a href="{{ url_for('index') }}" class="btn btn-secondary">Back</a>
+  {% if session.get('admin') %}
+    <a href="{{ url_for('index') }}" class="btn btn-secondary">Back to Dashboard</a>
+  {% else %}
+    <a href="{{ url_for('view_poll', poll_uuid=poll.uuid) }}" class="btn btn-secondary">Back to Voting</a>
+  {% endif %}
 </div>
 {% endblock %}

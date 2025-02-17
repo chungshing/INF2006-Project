@@ -1,5 +1,42 @@
 {% extends "base.html" %}
 {% block content %}
+<!-- Admin Login Modal -->
+{% if not session.get('admin') %}
+<div class="modal fade show" id="adminLoginModal" tabindex="-1" aria-labelledby="adminLoginModalLabel" aria-hidden="true" style="display:block; background: rgba(0,0,0,0.5);">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="adminLoginModalLabel">Admin Login</h5>
+      </div>
+      <div class="modal-body">
+        <form action="{{ url_for('admin_login') }}" method="POST">
+          <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" class="form-control" id="username" name="username" required>
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" name="password" required>
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Login</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Prevent access until login -->
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var modal = new bootstrap.Modal(document.getElementById('adminLoginModal'), {
+      backdrop: 'static', // Prevent closing when clicking outside
+      keyboard: false // Prevent closing with Escape key
+    });
+    modal.show();
+  });
+</script>
+{% else %}
+
 <h2 class="mb-4 text-center">Your Polls</h2>
 <div class="container">
   <div class="row justify-content-center">
@@ -11,14 +48,14 @@
           <p class="card-text">{{ poll.description }}</p>
           <p class="card-text">
             Link:
-            <a href="{{ url_for('view_poll', poll_id=poll.id, _external=True) }}" target="_blank">
-              {{ url_for('view_poll', poll_id=poll.id, _external=True) }}
+            <a href="{{ url_for('view_poll', poll_uuid=poll.uuid, _external=True) }}" target="_blank">
+              {{ url_for('view_poll', poll_uuid=poll.uuid, _external=True) }}
             </a>
           </p>
           <div class="d-flex justify-content-center gap-2">
-            <a href="{{ url_for('poll_results', poll_id=poll.id) }}" class="btn btn-info btn-sm">View Results</a>
-            <a href="{{ url_for('edit_poll', poll_id=poll.id) }}" class="btn btn-secondary btn-sm">Edit</a>
-            <form action="{{ url_for('delete_poll', poll_id=poll.id) }}" method="post" style="display:inline;">
+            <a href="{{ url_for('poll_results', poll_uuid=poll.uuid) }}" class="btn btn-info btn-sm">View Results</a>
+            <a href="{{ url_for('edit_poll', poll_uuid=poll.uuid) }}" class="btn btn-secondary btn-sm">Edit</a>
+            <form action="{{ url_for('delete_poll', poll_uuid=poll.uuid) }}" method="post" style="display:inline;">
               <button type="submit" class="btn btn-danger btn-sm">Delete</button>
             </form>
           </div>
@@ -32,5 +69,60 @@
 </div>
 <div class="mt-4 text-center">
   <a href="{{ url_for('create_poll') }}" class="btn btn-success">Create New Poll</a>
+  <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+    Change Password
+  </button>
 </div>
+
+<!-- Change Password Modal -->
+<div class="modal fade {% if session.get('change_password_error') %}show{% endif %}" 
+     id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" 
+     aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false" 
+     style="display: {% if session.get('change_password_error') %}block{% else %}none{% endif %};">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Change Password</h5>
+      </div>
+      <div class="modal-body">
+        <!-- Display Error Message in Red Text -->
+        {% if session.get('change_password_error') %}
+          <p class="text-danger text-center"><strong>{{ session.pop('change_password_error') }}</strong></p>
+        {% endif %}
+
+        <form action="{{ url_for('change_password') }}" method="POST">
+          <div class="mb-3">
+            <label for="old_password" class="form-label">Old Password</label>
+            <input type="password" class="form-control" id="old_password" name="old_password" required>
+          </div>
+          <div class="mb-3">
+            <label for="new_password" class="form-label">New Password</label>
+            <input type="password" class="form-control" id="new_password" name="new_password" required>
+          </div>
+          <div class="mb-3">
+            <label for="confirm_password" class="form-label">Confirm New Password</label>
+            <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+          </div>
+          <div class="d-flex justify-content-between">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Back</button>
+            <button type="submit" class="btn btn-warning">Change Password</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript to Open Modal When Error Occurs -->
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    if ("{{ session.get('change_password_error') }}" !== "None") {
+      var modal = new bootstrap.Modal(document.getElementById('changePasswordModal'));
+      modal.show();
+    }
+  });
+</script>
+
+{% endif %}
 {% endblock %}
+

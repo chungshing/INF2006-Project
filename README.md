@@ -12,12 +12,29 @@ It allows users to create polls, share them, vote, and view poll results.
 ✅ **Voting System** - Users can vote on available polls.  
 ✅ **View Poll Results** - The admin can check the number of votes each option has received.
 
-## Install Dependencies
-Install PythonFlask using:
+## Connect to MYSQL
+Remember to on Apache and MYSQL in order to works
+You can use XAMPP to on Apache and MYSQL
 
-pip install flask
+## 1. Create a Virtual Environment
+```bash
+python -m venv venv
+```
 
-## Run the Polling Application:
+## 2. Activate the Virtual Environment
+```bash
+venv\Scripts\activate
+```
+
+## 3. Install Dependencies
+Install Dependencies using:
+```bash
+pip install -r requirements.txt
+```
+
+## 4. Run the Polling Application:
 Enter your Terminal, cd to project directory if not already there then enter:
 
+```bash
 python app.py
+```

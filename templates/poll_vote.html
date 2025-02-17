@@ -1,31 +1,42 @@
 {% extends "base.html" %}
+
 {% block content %}
+
 <h2 class="mb-4 text-center">{{ poll.title }}</h2>
+
 <div class="card mx-auto" style="max-width: 600px;">
   <div class="card-body">
     <p class="card-text">{{ poll.description }}</p>
-    <form method="post" action="{{ url_for('view_poll', poll_id=poll.id) }}">
-      {% for question in poll.questions %}
-        {% set q_index = loop.index0 %}
+
+    <form method="post" action="{{ url_for('view_poll', poll_uuid=poll.uuid) }} ">
+      {% for question in questions %}
         <div class="mb-4">
-          <h5>{{ question.question }}</h5>
+          <h5>{{ question.question_text }}</h5>
+          
           {% for option in question.options %}
             <div class="form-check">
-              <input class="form-check-input" type="radio" name="question{{ q_index }}" id="q{{ q_index }}_option{{ loop.index0 }}" value="{{ loop.index0 }}" required>
-              <label class="form-check-label" for="q{{ q_index }}_option{{ loop.index0 }}">
-                {{ option }}
+              <input class="form-check-input" type="radio" 
+                     name="question{{ question.id }}" 
+                     id="q{{ question.id }}_option{{ option.id }}" 
+                     value="{{ option.id }}" required>
+              <label class="form-check-label" for="q{{ question.id }}_option{{ option.id }}">
+                {{ option.option_text }}
               </label>
             </div>
           {% endfor %}
         </div>
       {% endfor %}
+
       <div class="text-center">
         <button type="submit" class="btn btn-primary">Submit Vote</button>
       </div>
     </form>
   </div>
 </div>
+
 <div class="mt-4 text-center">
-  <a href="{{ url_for('index') }}" class="btn btn-secondary">Back</a>
+  {% if session.get('admin') %}
+    <a href="{{ url_for('index') }}" class="btn btn-secondary">Back to Dashboard</a>
+  {% endif %}
 </div>
 {% endblock %}
