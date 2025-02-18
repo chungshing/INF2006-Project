@@ -11,12 +11,19 @@ from datetime import datetime, timedelta
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'  # Required for session management
 
-# MySQL Configuration
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
+# MySQL Configuration for EC2 instance
+app.config['MYSQL_HOST'] = 'database-1.cttl73fjjlpd.us-east-1.rds.amazonaws.com'
+app.config['MYSQL_USER'] = 'admin'
+app.config['MYSQL_PASSWORD'] = 'testtest'
 app.config['MYSQL_DB'] = 'polls_db'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
+
+# MySQL Configuration for localhost
+# app.config['MYSQL_HOST'] = 'localhost'
+# app.config['MYSQL_USER'] = 'root'
+# app.config['MYSQL_PASSWORD'] = ''
+# app.config['MYSQL_DB'] = 'polls_db'
+# app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
 mysql = MySQL(app)
 
