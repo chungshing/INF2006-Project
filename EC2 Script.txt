@@ -1,0 +1,12 @@
+# Install Git and Docker
+sudo yum install -y git docker
+sudo systemctl start docker
+sudo systemctl enable docker
+
+# Clone your Git repository (update with your repo URL)
+git clone https://github.com/chungshing/INF2006-Project.git
+mv INF2006-Project/* .
+
+# Build and Run the Docker container
+sudo docker build -t flask-app .
+sudo docker run -d --restart always -p 5000:5000 flask-app
