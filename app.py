@@ -12,7 +12,7 @@ app = Flask(__name__)
 app.secret_key = 'supersecretkey'  # Required for session management
 
 # MySQL Configuration for EC2 instance
-app.config['MYSQL_HOST'] = 'database-1.cttl73fjjlpd.us-east-1.rds.amazonaws.com'
+app.config['MYSQL_HOST'] = 'project-database.cttl73fjjlpd.us-east-1.rds.amazonaws.com'
 app.config['MYSQL_USER'] = 'admin'
 app.config['MYSQL_PASSWORD'] = 'testtest'
 app.config['MYSQL_DB'] = 'polls_db'
